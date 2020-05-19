@@ -7,6 +7,11 @@ router.get('/', function(req, res, next) {
 });
 router.post('/', function (req, res) {
   console.log(JSON.stringify(req.body));
-  res.send("gotit");
+  var citylist = `INSERT INTO citylist (feels_like, humidity, pressure, temp, temp_max, temp_min, time, city)VALUES ('${req.body.feels_like}','${req.body.humidity}','${req.body.pressure}','${req.body.temp}','${req.body.temp_max}','${req.body.temp_min}','${req.body.time}','${req.body.city}')`;
+  sql.query(citylist, function (err, result) {
+    if (err) throw err;
+    console.log(req.body);
+    res.send('gotit');
+  });
 });
 module.exports = router;
