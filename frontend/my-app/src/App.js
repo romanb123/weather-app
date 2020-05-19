@@ -33,7 +33,7 @@ class App extends React.Component {
           });
           if (result.message !== "city not found") {
             var d = new Date();
-            axios.post('http://localhost:3000/users', {
+            axios.post('http://localhost:3000/users/'+this.state.value, {
               feels_like: result.main.feels_like,
               humidity: result.main.humidity,
               pressure: result.main.pressure,
