@@ -1,7 +1,8 @@
 var express = require('express');
+
+
 var router = express.Router();
 var sql = require('../database');
-/* GET users listing. */
 router.get('/:cityname', function (req, res, next) {
   sql.query(`SELECT * FROM citylist WHERE city = '${req.params.cityname}'`, function (err, result) {
     if (err) throw err;
