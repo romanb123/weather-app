@@ -22,6 +22,25 @@ class App extends React.Component {
     this.setState({ value: event.target.value });
   }
   getweather() {
+// ===========get weather from server====start==
+axios.get('http://localhost:3000/users/'+this.state.value)
+  .then((response)=> {
+    console.log(response.data[0].time);
+    console.log(response.data[0]);
+    // check if it is more then 1 hour
+    var checktime = new Date();
+    if((response.data[0].time+120000)>=checktime.getTime()){
+      // if it is less then 1 hour
+      this.setState({
+        isLoaded: true,
+        weather:{
+        main:response.data[0]
+        } 
+      });
+    }
+    else{
+    // if it is more then 1 hour  
+      // ===========get weather from api====start==
     fetch(`http://api.openweathermap.org/data/2.5/weather?q=${this.state.value}&appid=b8ce29065c0a67b1e38773807063c87f`)
       .then(res => res.json())
       .then(
@@ -33,7 +52,8 @@ class App extends React.Component {
           });
           if (result.message !== "city not found") {
             var d = new Date();
-            axios.post('http://localhost:3000/users/'+this.state.value, {
+            // send weather info to backend start
+            axios.post('http://localhost:3000/users/' + this.state.value, {
               feels_like: result.main.feels_like,
               humidity: result.main.humidity,
               pressure: result.main.pressure,
@@ -41,7 +61,7 @@ class App extends React.Component {
               temp_max: result.main.temp_max,
               temp_min: result.main.temp_min,
               time: d.getTime(),
-              city:this.state.value
+              city: this.state.value
 
             })
               .then(function (response) {
@@ -50,12 +70,9 @@ class App extends React.Component {
               .catch(function (error) {
                 console.log(error);
               });
+             // send weather info to backend end
           }
-
         },
-        // Note: it's important to handle errors here
-        // instead of a catch() block so that we don't swallow
-        // exceptions from actual bugs in components.
         (error) => {
           console.log(error);
 
@@ -65,6 +82,18 @@ class App extends React.Component {
           });
         }
       )
+    // ===========get weather from api====end==
+    }
+  })
+  .catch(function (error) {
+    // handle error
+    console.log(error);
+  })
+  .finally(function () {
+    // always executed
+  });
+// ===========get weather from server====end==
+
   }
 
 
