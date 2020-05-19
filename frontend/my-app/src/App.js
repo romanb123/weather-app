@@ -1,5 +1,7 @@
 import React from 'react';
 import './App.css';
+import axios from 'axios';
+
 
 class App extends React.Component {
   constructor(props) {
@@ -8,7 +10,7 @@ class App extends React.Component {
       error: null,
       isLoaded: false,
       weather: {
-        main:null
+        main: null
       },
       value: null
     };
@@ -29,6 +31,27 @@ class App extends React.Component {
             isLoaded: true,
             weather: result
           });
+          if (result.message !== "city not found") {
+            var d = new Date();
+            axios.post('http://localhost:3000/users', {
+              feels_like: result.main.feels_like,
+              humidity: result.main.humidity,
+              pressure: result.main.pressure,
+              temp: result.main.temp,
+              temp_max: result.main.temp_max,
+              temp_min: result.main.temp_min,
+              time: d.getTime(),
+              city:this.state.value
+
+            })
+              .then(function (response) {
+                console.log(response);
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
+          }
+
         },
         // Note: it's important to handle errors here
         // instead of a catch() block so that we don't swallow
@@ -41,8 +64,6 @@ class App extends React.Component {
             error
           });
         }
-      ).then(
-        
       )
   }
 
@@ -58,7 +79,7 @@ class App extends React.Component {
             <div class="col-sm-9">
               <form action="/action_page.php">
                 <select class="form-control" id="sel1" name="sellist1" onChange={this.handleChange}>
-                <option></option>
+                  <option>choose the city</option>
                   <option>madrid</option>
                   <option>tokio</option>
                   <option>berlin</option>
@@ -66,7 +87,7 @@ class App extends React.Component {
                 </select>
               </form>
             </div>
-            <div class="col-sm-3"><button type="button" class="mybtn"  onClick={this.getweather}>Block level button</button>
+            <div class="col-sm-3"><button type="button" class="mybtn" onClick={this.getweather}>check the weather</button>
             </div>
           </div>
         </div>
@@ -82,7 +103,7 @@ class App extends React.Component {
             </tr>
           </thead>
           <tbody>
-          {(this.state.weather.main) ? <tr>
+            {(this.state.weather.main) ? <tr>
               <td>{this.state.weather.main.feels_like}</td>
               <td>{this.state.weather.main.humidity}</td>
               <td>{this.state.weather.main.pressure}</td>
@@ -90,7 +111,7 @@ class App extends React.Component {
               <td>{this.state.weather.main.temp_max}</td>
               <td>{this.state.weather.main.temp_min}</td>
             </tr>
-            : null}
+              : null}
           </tbody>
         </table></div>
 
